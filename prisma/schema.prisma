@@ -1,0 +1,179 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Enums
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
+}
+
+enum ScopeArea {
+  EVENTS
+  LEADERSHIP
+  MEDIA
+  MAGAZINE
+  ANNOUNCEMENTS
+  GALLERY
+  KIFLAT
+  ALEHU_BEWERE
+}
+
+// Models
+
+model Event {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
+  description String
+  image_url   String?
+  location    String
+  event_date  DateTime
+  /// UUID of the Auth Service user who created this record (no DB FK)
+  created_by  String   @db.Uuid
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("events")
+}
+
+model Leader {
+  id                String   @id @default(uuid()) @db.Uuid
+  name              String
+  role              String
+  biography         String
+  profile_image_url String?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  @@map("leaders")
+}
+
+model MediaItem {
+  id          String    @id @default(uuid()) @db.Uuid
+  title       String
+  description String?
+  media_url   String
+  media_type  MediaType
+  /// UUID of the Auth Service user who uploaded this item
+  uploaded_by String    @db.Uuid
+  created_at  DateTime  @default(now())
+
+  @@map("media_items")
+}
+
+model Magazine {
+  id              String   @id @default(uuid()) @db.Uuid
+  title           String
+  cover_image_url String?
+  /// Optional rich-text summary stored in the DB; the actual file is at file_url
+  content         String?
+  file_url        String
+  published_at    DateTime @default(now())
+  /// UUID of the Auth Service user who created this record (no DB FK)
+  created_by      String   @db.Uuid
+  updated_at      DateTime @updatedAt
+
+  @@map("magazines")
+}
+
+model Announcement {
+  id         String   @id @default(uuid()) @db.Uuid
+  title      String
+  message    String
+  expires_at DateTime
+  is_active  Boolean  @default(true)
+  /// UUID of the Auth Service user who created this record (no DB FK)
+  created_by String   @db.Uuid
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("announcements")
+}
+
+model GalleryImage {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
+  description String?
+  image_url   String
+  /// UUID of the Auth Service user who uploaded this image (no DB FK)
+  uploaded_by String   @db.Uuid
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("gallery_images")
+}
+
+model Kiflat {
+  id          String      @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  image_url   String?
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
+  sub_kiflat  SubKiflat[]
+
+  @@map("kiflat")
+}
+
+model SubKiflat {
+  id          String   @id @default(uuid()) @db.Uuid
+  kiflat_id   String   @db.Uuid
+  name        String
+  description String?
+  image_url   String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  kiflat Kiflat @relation(fields: [kiflat_id], references: [id], onDelete: Cascade)
+
+  @@map("sub_kiflat")
+}
+
+/// Donation/contribution submissions. donor_name and donor_contact are nullable
+/// to support anonymous contributions.
+model Subscription {
+  id            String   @id @default(uuid()) @db.Uuid
+  package_name  String
+  amount        Decimal  @db.Decimal(12, 2)
+  donor_name    String?
+  donor_contact String?
+  submitted_at  DateTime @default(now())
+
+  @@map("subscriptions")
+}
+
+/// Predefined donation packages served by GET /alehu-bewere/packages.
+/// Managed via seed; not mutated through the public API.
+model DonationPackage {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique
+  amount      Decimal  @db.Decimal(12, 2)
+  description String?
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now())
+
+  @@map("donation_packages")
+}
+
+/// Maps Sub-Admin users (from the Auth Service) to permitted scope areas.
+model AdminScope {
+  id            String    @id @default(uuid()) @db.Uuid
+  /// Auth Service User.id — enforced at the application layer, not by DB FK
+  admin_user_id String    @db.Uuid
+  scope_area    ScopeArea
+  /// Auth Service User.id of the Admin who made the assignment
+  assigned_by   String    @db.Uuid
+  assigned_at   DateTime  @default(now())
+
+  /// One row per (user, scope) pair — prevents duplicate assignments 
+  @@unique([admin_user_id, scope_area])
+  @@map("admin_scopes")
+}

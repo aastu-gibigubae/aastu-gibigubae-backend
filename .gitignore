@@ -1,5 +1,32 @@
-/node_modules
-package-lock.json
+# Dependencies
+node_modules/
 
+# Build output
+dist/
+build/
+
+# Prisma generated client (regenerated via `prisma generate`)
+src/generated/
+
+# Environment files — never commit real secrets
 .env
+.env.local
+.env.*.local
+config/.env
 
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# OS / editor artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
