@@ -36,6 +36,7 @@ model Event {
   image_url   String?
   location    String
   event_date  DateTime
+  is_published Boolean @default(false)  
   /// UUID of the Auth Service user who created this record (no DB FK)
   created_by  String   @db.Uuid
   created_at  DateTime @default(now())
