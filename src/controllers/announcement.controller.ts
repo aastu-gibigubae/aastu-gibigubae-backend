@@ -1,0 +1,49 @@
+import { Request, Response } from 'express';
+import * as announcementService from '../services/announcement.service';
+import { AppError } from '../utils/appError';
+
+function getIdParam(req: Request): string {
+  const { id } = req.params;
+  if (typeof id !== 'string') {
+    throw new AppError(400, 'Invalid id parameter');
+  }
+  return id;
+}
+
+export async function listAnnouncements(_req: Request, res: Response) {
+  const announcements = await announcementService.listActiveAnnouncements();
+  res.json(announcements);
+}
+
+export async function getAnnouncement(req: Request, res: Response) {
+  const announcement = await announcementService.getAnnouncementById(getIdParam(req));
+  res.json(announcement);
+}
+
+export async function createAnnouncement(req: Request, res: Response) {
+  const { title, message, expires_at, is_active, created_by } = req.body;
+  const announcement = await announcementService.createAnnouncement({
+    title,
+    message,
+    expires_at: new Date(expires_at),
+    is_active,
+    created_by,
+  });
+  res.status(201).json(announcement);
+}
+
+export async function updateAnnouncement(req: Request, res: Response) {
+  const { title, message, expires_at, is_active } = req.body;
+  const announcement = await announcementService.updateAnnouncement(getIdParam(req), {
+    title,
+    message,
+    expires_at: expires_at === undefined ? undefined : new Date(expires_at),
+    is_active,
+  });
+  res.json(announcement);
+}
+
+export async function deleteAnnouncement(req: Request, res: Response) {
+  await announcementService.deleteAnnouncement(getIdParam(req));
+  res.status(204).send();
+}
