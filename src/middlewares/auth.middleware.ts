@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { AppError } from '../utils/appError';
+import { AppError } from '../utils/appError.js';
 
 /**
  * The shape we expect the SSO service's JWT payload to carry.
