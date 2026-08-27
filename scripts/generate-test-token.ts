@@ -1,21 +1,30 @@
 /**
- * Local-only helper: signs a test token with keys/private.pem so you can
- * hit your protected routes with a real, valid-looking JWT without a live
- * SSO service. Run: npx ts-node scripts/generate-test-token.ts [role]
+ * Local-only helper — signs a test token with keys/private.pem so you can
+ * hit protected routes in Postman without a live SSO service.
+ *
+ * Usage:
+ *   npx tsx scripts/generate-test-token.ts            (defaults to ADMIN)
+ *   npx tsx scripts/generate-test-token.ts SUB_ADMIN
+ *   npx tsx scripts/generate-test-token.ts STUDENT
  */
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const role = process.argv[2] ?? 'ADMIN';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const role = (process.argv[2] ?? 'ADMIN') as 'ADMIN' | 'SUB_ADMIN' | 'STUDENT';
 const privateKeyPath = path.join(__dirname, '..', 'keys', 'private.pem');
 
 if (!fs.existsSync(privateKeyPath)) {
   console.error(
-    'keys/private.pem not found. Generate one first:\n' +
-      '  mkdir -p keys\n' +
-      '  openssl genrsa -out keys/private.pem 2048\n' +
-      '  openssl rsa -in keys/private.pem -pubout -out keys/public.pem'
+    '\n❌  keys/private.pem not found.\n\n' +
+    'Generate a key pair first by running:\n\n' +
+    '  mkdir -p keys\n' +
+    '  openssl genrsa -out keys/private.pem 2048\n' +
+    '  openssl rsa -in keys/private.pem -pubout -out keys/public.pem\n\n' +
+    'Then copy the contents of keys/public.pem into your .env as JWT_PUBLIC_KEY.\n'
   );
   process.exit(1);
 }
@@ -28,7 +37,10 @@ const token = jwt.sign(
     role,
   },
   privateKey,
-  { algorithm: 'RS256', expiresIn: '1h' }
+  { algorithm: 'RS256', expiresIn: '24h' }
 );
 
+console.log(`\n✅  Token generated for role: ${role}\n`);
+console.log('Paste this into Postman → Authorization → Bearer Token:\n');
 console.log(token);
+console.log('\n');
