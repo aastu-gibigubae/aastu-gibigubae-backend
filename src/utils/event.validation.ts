@@ -154,3 +154,92 @@ export const eventIdSchema = Joi.object({
       "any.required": "Event ID is required",
     }),
 });
+
+export const eventQuerySchema = Joi.object({
+  page: Joi.number()
+    .integer()
+    .min(1)
+    .default(1)
+    .messages({
+      "number.base": "Page must be a number",
+      "number.integer": "Page must be an integer",
+      "number.min": "Page must be at least 1",
+    }),
+
+  limit: Joi.number()
+    .integer()
+    .min(1)
+    .max(50)
+    .default(10)
+    .messages({
+      "number.base": "Limit must be a number",
+      "number.integer": "Limit must be an integer",
+      "number.min": "Limit must be at least 1",
+      "number.max": "Limit must not exceed 50",
+    }),
+
+  search: Joi.string()
+    .trim()
+    .min(1)
+    .max(200)
+    .optional()
+    .messages({
+      "string.empty": "Search cannot be empty",
+      "string.max": "Search must not exceed 200 characters",
+    }),
+
+  fromDate: Joi.date()
+    .iso()
+    .optional()
+    .messages({
+      "date.base": "fromDate must be a valid date",
+      "date.format": "fromDate must be a valid ISO date",
+    }),
+
+  toDate: Joi.date()
+    .iso()
+    .optional()
+    .messages({
+      "date.base": "toDate must be a valid date",
+      "date.format": "toDate must be a valid ISO date",
+    }),
+
+  sortBy: Joi.string()
+    .valid(
+      "event_date",
+      "title",
+      "created_at",
+    )
+    .default("event_date")
+    .messages({
+      "any.only":
+        "sortBy must be event_date, title, or created_at",
+    }),
+
+  sortOrder: Joi.string()
+    .valid("asc", "desc")
+    .default("asc")
+    .messages({
+      "any.only":
+        "sortOrder must be asc or desc",
+    }),
+})
+  .custom((value, helpers) => {
+    if (
+      value.fromDate &&
+      value.toDate &&
+      value.fromDate > value.toDate
+    ) {
+      return helpers.error("date.range");
+    }
+
+    return value;
+  })
+  .messages({
+    "date.range":
+      "fromDate cannot be later than toDate",
+  })
+  .options({
+    abortEarly: false,
+    stripUnknown: true,
+  });
