@@ -13,6 +13,7 @@ import {
 import {
   createEventSchema,
   eventIdSchema,
+  eventQuerySchema,
   updateEventSchema,
 } from "../utils/event.validation.js";
 
@@ -20,24 +21,6 @@ import {
   errorResponse,
   successResponse,
 } from "../utils/response.js";
-
-const getPaginationQuery = (req: Request) => {
-  const page = Number(req.query.page ?? 1);
-  const limit = Number(req.query.limit ?? 10);
-
-  return {
-    page:
-      Number.isInteger(page) && page > 0
-        ? page
-        : 1,
-
-    limit:
-      Number.isInteger(limit) && limit > 0
-        ? Math.min(limit, 50)
-        : 10,
-  };
-};
-
 
 export const createEvent = async (
   req: Request,
@@ -79,10 +62,26 @@ export const getPublishedEvents = async (
   next: NextFunction,
 ) => {
   try {
-    const query = getPaginationQuery(req);
+    const { error, value } =
+      eventQuerySchema.validate(
+        req.query,
+      );
+
+    if (error) {
+      return errorResponse(
+        res,
+        400,
+        "Invalid query parameters",
+        error.details.map(
+          (detail) => detail.message,
+        ),
+      );
+    }
 
     const result =
-      await getPublishedEventsService(query);
+      await getPublishedEventsService(
+        value,
+      );
 
     return successResponse(
       res,
@@ -94,7 +93,6 @@ export const getPublishedEvents = async (
     return next(error);
   }
 };
-
 
 export const getPublishedEventById = async (
   req: Request,
@@ -145,10 +143,24 @@ export const getAllEvents = async (
   next: NextFunction,
 ) => {
   try {
-    const query = getPaginationQuery(req);
+    const { error, value } =
+      eventQuerySchema.validate(
+        req.query,
+      );
+
+    if (error) {
+      return errorResponse(
+        res,
+        400,
+        "Invalid query parameters",
+        error.details.map(
+          (detail) => detail.message,
+        ),
+      );
+    }
 
     const result =
-      await getAllEventsService(query);
+      await getAllEventsService(value);
 
     return successResponse(
       res,
