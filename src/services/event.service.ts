@@ -24,53 +24,130 @@ export const createEvent = async (data: CreateEventInput) => {
   }
 };
 
-export const getPublishedEvents = async (query: EventQuery) => {
+export const getPublishedEvents = async (
+  query: EventQuery,
+) => {
   try {
-    const page = Math.max(query.page ?? 1, 1);
-    const limit = Math.min(Math.max(query.limit ?? 10, 1), 50);
+    const {
+      page,
+      limit,
+      search,
+      fromDate,
+      toDate,
+      sortBy,
+      sortOrder,
+    } = query;
+
     const skip = (page - 1) * limit;
 
-    const [events, total] = await prisma.$transaction([
-      prisma.event.findMany({
-        where: {
-          is_published: true,
-        },
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          image_url: true,
-          location: true,
-          event_date: true,
-          is_published: true,
-          created_at: true,
-          updated_at: true,
-        },
-        orderBy: {
-          event_date: "asc",
-        },
-        skip,
-        take: limit,
-      }),
+   
 
-      prisma.event.count({
-        where: {
-          is_published: true,
-        },
-      }),
-    ]);
+    const where = {
+      // Public users can only see published events
+      is_published: true,
+      //search
+      ...(search
+        ? {
+            OR: [
+              {
+                title: {
+                  contains: search,
+                  mode: "insensitive" as const,
+                },
+              },
+
+              {
+                description: {
+                  contains: search,
+                  mode: "insensitive" as const,
+                },
+              },
+
+              {
+                location: {
+                  contains: search,
+                  mode: "insensitive" as const,
+                },
+              },
+            ],
+          }
+        : {}),
+
+      // DATE FILTER
+      
+
+      ...(fromDate || toDate
+        ? {
+            event_date: {
+              ...(fromDate && {
+                gte: fromDate,
+              }),
+
+              ...(toDate && {
+                lte: toDate,
+              }),
+            },
+          }
+        : {}),
+    };
+
+    // GET EVENTS + TOTAL COUNT
+    
+
+    const [events, total] =
+      await prisma.$transaction([
+        prisma.event.findMany({
+          where,
+
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            image_url: true,
+            location: true,
+            event_date: true,
+            is_published: true,
+            created_at: true,
+            updated_at: true,
+          },
+
+          orderBy: {
+            [sortBy]: sortOrder,
+          },
+
+          skip,
+          take: limit,
+        }),
+
+        prisma.event.count({
+          where,
+        }),
+      ]);
 
     return {
       events,
+
       pagination: {
         page,
         limit,
         total,
-        totalPages: Math.ceil(total / limit),
+
+        totalPages:
+          Math.ceil(total / limit),
+
+        hasNextPage:
+          page < Math.ceil(total / limit),
+
+        hasPreviousPage:
+          page > 1,
       },
     };
   } catch (error) {
-    console.error("Getting published events failed:", error);
+    console.error(
+      "Getting published events failed:",
+      error,
+    );
+
     throw error;
   }
 };
@@ -100,35 +177,117 @@ export const getPublishedEventById = async (id: string) => {
   }
 };
 
-export const getAllEvents = async (query: EventQuery) => {
+export const getAllEvents = async (
+  query: EventQuery,
+) => {
   try {
-    const page = Math.max(query.page ?? 1, 1);
-    const limit = Math.min(Math.max(query.limit ?? 10, 1), 50);
+    const {
+      page,
+      limit,
+      search,
+      fromDate,
+      toDate,
+      sortBy,
+      sortOrder,
+    } = query;
+
     const skip = (page - 1) * limit;
 
-    const [events, total] = await prisma.$transaction([
-      prisma.event.findMany({
-        orderBy: {
-          event_date: "asc",
-        },
-        skip,
-        take: limit,
-      }),
+ 
 
-      prisma.event.count(),
-    ]);
+    const where = {
+   
+        //search
+      ...(search
+        ? {
+            OR: [
+              {
+                title: {
+                  contains: search,
+                  mode: "insensitive" as const,
+                },
+              },
+
+              {
+                description: {
+                  contains: search,
+                  mode: "insensitive" as const,
+                },
+              },
+
+              {
+                location: {
+                  contains: search,
+                  mode: "insensitive" as const,
+                },
+              },
+            ],
+          }
+        : {}),
+
+      //DATE FILTER
+     
+
+      ...(fromDate || toDate
+        ? {
+            event_date: {
+              ...(fromDate && {
+                gte: fromDate,
+              }),
+
+              ...(toDate && {
+                lte: toDate,
+              }),
+            },
+          }
+        : {}),
+    };
+
+   //GET EVENTS + TOTAL COUNT
+   
+
+    const [events, total] =
+      await prisma.$transaction([
+        prisma.event.findMany({
+          where,
+
+          orderBy: {
+            [sortBy]: sortOrder,
+          },
+
+          skip,
+          take: limit,
+        }),
+
+        prisma.event.count({
+          where,
+        }),
+      ]);
 
     return {
       events,
+
       pagination: {
         page,
         limit,
         total,
-        totalPages: Math.ceil(total / limit),
+
+        totalPages:
+          Math.ceil(total / limit),
+
+        hasNextPage:
+          page < Math.ceil(total / limit),
+
+        hasPreviousPage:
+          page > 1,
       },
     };
   } catch (error) {
-    console.error("Getting all events failed:", error);
+    console.error(
+      "Getting all events failed:",
+      error,
+    );
+
     throw error;
   }
 };
