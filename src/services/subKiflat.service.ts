@@ -4,7 +4,7 @@ import {
   CreateSubKiflatInput,
   SubKiflatQuery,
   UpdateSubKiflatInput,
-} from "../models/subkiflat.model";
+} from "../models/subKiflat.model.js";
 
 
 

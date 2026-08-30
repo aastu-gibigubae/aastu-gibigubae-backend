@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import * as announcementService from '../services/announcement.service';
-import { AppError } from '../utils/appError';
+import * as announcementService from '../services/announcement.service.js';
+import { AppError } from '../utils/appError.js';
 
 function getIdParam(req: Request): string {
   const { id } = req.params;

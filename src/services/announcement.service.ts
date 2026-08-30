@@ -1,5 +1,5 @@
-import { prisma } from '../models/prisma';
-import { AppError } from '../utils/appError';
+import prisma from '../models/prisma.js';
+import { AppError } from '../utils/appError.js';
 
 export interface CreateAnnouncementInput {
   title: string;

@@ -6,7 +6,7 @@ import {
   getKiflatById,
   getKiflats,
   updateKiflat,
-} from "../controllers/kiflat.controller";
+} from "../controllers/kiflat.controller.js";
 
 import { asyncHandler } from "../utils/asyncHandler.js";
 
