@@ -12,6 +12,7 @@ CREATE TABLE "events" (
     "image_url" TEXT,
     "location" TEXT NOT NULL,
     "event_date" TIMESTAMP(3) NOT NULL,
+    "is_published" BOOLEAN NOT NULL DEFAULT false,
     "created_by" UUID NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -116,8 +117,8 @@ CREATE TABLE "subscriptions" (
     "id" UUID NOT NULL,
     "package_name" TEXT NOT NULL,
     "amount" DECIMAL(12,2) NOT NULL,
-    "donor_name" TEXT,
-    "donor_contact" TEXT,
+    "donor_name" TEXT NOT NULL,
+    "donor_contact" TEXT NOT NULL,
     "submitted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "subscriptions_pkey" PRIMARY KEY ("id")
