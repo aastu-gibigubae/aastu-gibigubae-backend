@@ -1,4 +1,4 @@
-import prisma from '../lib/prisma.js';
+import prisma from "../models/prisma.js";
 import { AppError } from '../utils/appError.js';
 
 export interface CreateLeaderInput {
