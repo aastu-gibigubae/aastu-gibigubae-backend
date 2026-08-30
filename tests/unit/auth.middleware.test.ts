@@ -2,8 +2,8 @@ import express from 'express';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import { generateKeyPairSync } from 'crypto';
-import { createAuthMiddleware, requireRole } from '../../src/middlewares/auth.middleware';
-import { errorHandler } from '../../src/middlewares/errorHandler.middleware';
+import { createAuthMiddleware, requireRole } from '../../src/middlewares/auth.middleware.js';
+import { errorHandler } from '../../src/middlewares/errorHandler.middleware.js';
 
 function makeRsaKeyPair() {
   return generateKeyPairSync('rsa', {
