@@ -16,12 +16,7 @@ import {
 
 import { successResponse, errorResponse } from "../utils/response.js";
 
-/*
-|--------------------------------------------------------------------------
-| CREATE GALLERY IMAGE
-| Expects: JSON body with fields: title, image_url, description?
-|--------------------------------------------------------------------------
-*/
+//CREATE GALLERY IMAGE
 
 export const createGallery = async (
   req: Request,
@@ -54,11 +49,8 @@ export const createGallery = async (
   }
 };
 
-/*
-|--------------------------------------------------------------------------
-| GET ALL GALLERY IMAGES
-|--------------------------------------------------------------------------
-*/
+//GET ALL GALLERY IMAGES
+
 
 export const getGalleries = async (
   _req: Request,
@@ -73,11 +65,8 @@ export const getGalleries = async (
   }
 };
 
-/*
-|--------------------------------------------------------------------------
-| GET GALLERY IMAGE BY ID
-|--------------------------------------------------------------------------
-*/
+//GET GALLERY IMAGE BY ID
+
 
 export const getGalleryById = async (
   req: Request,
@@ -103,13 +92,8 @@ export const getGalleryById = async (
   }
 };
 
-/*
-|--------------------------------------------------------------------------
-| UPDATE GALLERY IMAGE
-| Accepts: JSON body with optional fields: title, description, image_url
-| At least one field must be provided.
-|--------------------------------------------------------------------------
-*/
+//UPDATE GALLERY IMAGE
+
 
 export const updateGallery = async (
   req: Request,
@@ -156,11 +140,8 @@ export const updateGallery = async (
   }
 };
 
-/*
-|--------------------------------------------------------------------------
-| DELETE GALLERY IMAGE
-|--------------------------------------------------------------------------
-*/
+//DELETE GALLERY IMAGE
+
 
 export const deleteGallery = async (
   req: Request,
