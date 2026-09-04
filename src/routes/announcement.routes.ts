@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as announcementController from '../controllers/announcement.controller.ts';
+import * as announcementController from '../controllers/announcement.controller.js';
 
 const router = Router();
 
