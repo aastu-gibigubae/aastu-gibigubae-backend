@@ -1,8 +1,7 @@
 import { Router } from 'express';
-import {
-  createAuthMiddleware,
-  requireRole,
-} from '../middlewares/auth.middleware.js';
+import { createAuthMiddleware } from "../middlewares/auth.middleware.js";
+import { requireScopeAccess } from "../middlewares/scopeAccess.middleware.js";
+import { ScopeArea } from "../generated/prisma/enums.js";
 import { strictLimiter } from '../middlewares/rateLimit.middleware.js';
 import { validate } from '../middlewares/validate.middleware.js';
 import { sanitizeRichText } from '../middlewares/sanitize.middleware.js';
@@ -32,7 +31,7 @@ leaderRouter.get(
 leaderRouter.post(
   '/',
   authenticate,
-  requireRole('ADMIN', 'SUB_ADMIN'),
+  requireScopeAccess(ScopeArea.LEADERSHIP),
   strictLimiter,
   sanitizeRichText,
   validate(createLeaderSchema),
@@ -43,7 +42,7 @@ leaderRouter.post(
 leaderRouter.put(
   '/:id',
   authenticate,
-  requireRole('ADMIN', 'SUB_ADMIN'),
+  requireScopeAccess(ScopeArea.LEADERSHIP),
   strictLimiter,
   sanitizeRichText,
   validate(leaderIdParamSchema, 'params'),
@@ -55,7 +54,7 @@ leaderRouter.put(
 leaderRouter.delete(
   '/:id',
   authenticate,
-  requireRole('ADMIN', 'SUB_ADMIN'),
+  requireScopeAccess(ScopeArea.LEADERSHIP),
   strictLimiter,
   validate(leaderIdParamSchema, 'params'),
   leaderController.deleteLeader

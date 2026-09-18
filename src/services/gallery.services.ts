@@ -3,9 +3,9 @@ import { AppError } from "../utils/appError.js";
 
 export interface CreateGalleryInput {
   title: string;
-  description?: string | null;
+  description?: string;
   image_url: string;
-  uploaded_by: string;
+  userId: string;
 }
 
 export interface UpdateGalleryInput {
@@ -28,7 +28,7 @@ export const createGallery = async (data: CreateGalleryInput) => {
         title: data.title,
         description: data.description ?? null,
         image_url: data.image_url,
-        uploaded_by: data.uploaded_by,
+        userId: data.userId,
       },
     });
   } catch (error) {

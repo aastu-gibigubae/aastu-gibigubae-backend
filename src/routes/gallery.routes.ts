@@ -1,9 +1,8 @@
 import { Router } from "express";
 
-import {
-  createAuthMiddleware,
-  requireRole,
-} from "../middlewares/auth.middleware.js";
+import { createAuthMiddleware } from "../middlewares/auth.middleware.js";
+import { requireScopeAccess } from "../middlewares/scopeAccess.middleware.js";
+import { ScopeArea } from "../generated/prisma/enums.js";
 
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -41,21 +40,21 @@ galleryRouter.get("/:id", asyncHandler(getGalleryById));
 galleryRouter.post(
   "/",
   authenticate,
-  requireRole("ADMIN", "SUB_ADMIN"),
+  requireScopeAccess(ScopeArea.GALLERY),
   asyncHandler(createGallery),
 );
 
 galleryRouter.patch(
   "/:id",
   authenticate,
-  requireRole("ADMIN", "SUB_ADMIN"),
+  requireScopeAccess(ScopeArea.GALLERY),
   asyncHandler(updateGallery),
 );
 
 galleryRouter.delete(
   "/:id",
   authenticate,
-  requireRole("ADMIN", "SUB_ADMIN"),
+  requireScopeAccess(ScopeArea.GALLERY),
   asyncHandler(deleteGallery),
 );
 

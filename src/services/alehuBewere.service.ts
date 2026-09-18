@@ -86,17 +86,17 @@ export async function createSubscription(input: CreateSubscriptionInput) {
 
   return prisma.subscription.create({
     data: {
-      package_name: donationPackage.name,
+      package: donationPackage.name as any, // assuming DonationPackageType mapping
       amount,
-      donor_name: input.donor_name,
-      donor_contact: input.donor_contact,
+      full_name: input.donor_name,
+      phone_number: input.donor_contact,
     },
   });
 }
 
 export async function listSubscriptions() {
   return prisma.subscription.findMany({
-    orderBy: { submitted_at: "desc" },
+    orderBy: { created_at: "desc" },
   });
 }
 

@@ -2,7 +2,9 @@ import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { createAuthMiddleware } from '../middlewares/auth.middleware.js';
 import { config } from '../../config/config.js';
-import * as alehuBewereController from '../controllers/alehuBewere.controller.js';;
+import * as alehuBewereController from '../controllers/alehuBewere.controller.js';
+import { requireScopeAccess } from "../middlewares/scopeAccess.middleware.js";
+import { ScopeArea } from "../generated/prisma/enums.js";
 
 const router = Router();
 
@@ -22,12 +24,11 @@ router.get("/packages", alehuBewereController.listPackages);
 
 router.post(
   "/subscriptions",
-  authenticate,
   submissionLimiter,
   alehuBewereController.createSubscription,
 );
 
-router.get("/subscriptions", alehuBewereController.listSubscriptions);
-router.get("/subscriptions/:id", alehuBewereController.getSubscription);
+router.get("/subscriptions", authenticate, requireScopeAccess(ScopeArea.ALEHU_BEWERE), alehuBewereController.listSubscriptions);
+router.get("/subscriptions/:id", authenticate, requireScopeAccess(ScopeArea.ALEHU_BEWERE), alehuBewereController.getSubscription);
 
 export default router;

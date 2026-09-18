@@ -10,6 +10,7 @@ import magazineRoutes from "./routes/magazine.route.js";
 import kiflatRoutes from "./routes/kiflat.route.js";
 import subKiflatRoutes from "./routes/subKiflat.route.js";
 import announcementRoutes from "./routes/announcement.routes.js";
+import adminScopeRoutes from "./routes/adminScope.routes.js";
 import galleryRouter from "./routes/gallery.routes.js";
 import alehuBewereRoutes from "./routes/alehuBewere.routes.js";
 import { errorHandler } from "./middlewares/errorHandler.middleware.js";
@@ -42,6 +43,7 @@ app.use("/api/magazines", magazineRoutes);
 app.use("/api/kiflats", kiflatRoutes);
 app.use("/api/sub-kiflats", subKiflatRoutes);
 app.use("/api/announcements", announcementRoutes);
+app.use("/api/admin/sub-admins", adminScopeRoutes);
 app.use("/api/gallery", galleryRouter);
 app.use("/api/alehu-bewere", alehuBewereRoutes);
 

@@ -11,7 +11,9 @@ import {
 } from "../controllers/event.controller.js";
 
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { createAuthMiddleware, requireRole } from "../middlewares/auth.middleware.js";
+import { createAuthMiddleware} from "../middlewares/auth.middleware.js";
+import { requireScopeAccess } from "../middlewares/scopeAccess.middleware.js";
+import { ScopeArea } from "../generated/prisma/enums.js";
 import { strictLimiter } from "../middlewares/rateLimit.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
 import { sanitizeRichText } from "../middlewares/sanitize.middleware.js";
@@ -26,7 +28,7 @@ const authenticate = createAuthMiddleware(config.JWT_PUBLIC_KEY);
 router.get(
   "/admin/all",
   authenticate,
-  requireRole('ADMIN', 'SUB_ADMIN'),
+  requireScopeAccess(ScopeArea.EVENTS),
   strictLimiter,
   asyncHandler(getAllEvents),
 );
@@ -34,7 +36,7 @@ router.get(
 router.get(
   "/admin/:id",
   authenticate,
-  requireRole('ADMIN', 'SUB_ADMIN'),
+  requireScopeAccess(ScopeArea.EVENTS),
   strictLimiter,
   validate(eventIdSchema, 'params'),
   asyncHandler(getEventById),
@@ -43,7 +45,7 @@ router.get(
 router.post(
   "/",
   authenticate,
-  requireRole('ADMIN', 'SUB_ADMIN'),
+  requireScopeAccess(ScopeArea.EVENTS),
   strictLimiter,
   sanitizeRichText,
   validate(createEventSchema),
@@ -53,7 +55,7 @@ router.post(
 router.patch(
   "/:id",
   authenticate,
-  requireRole('ADMIN', 'SUB_ADMIN'),
+  requireScopeAccess(ScopeArea.EVENTS),
   strictLimiter,
   sanitizeRichText,
   validate(eventIdSchema, 'params'),
@@ -64,7 +66,7 @@ router.patch(
 router.delete(
   "/:id",
   authenticate,
-  requireRole('ADMIN', 'SUB_ADMIN'),
+  requireScopeAccess(ScopeArea.EVENTS),
   strictLimiter,
   validate(eventIdSchema, 'params'),
   asyncHandler(deleteEvent),
