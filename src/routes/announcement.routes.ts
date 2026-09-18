@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as announcementController from '../controllers/announcement.controller.ts';
+import * as announcementController from '../controllers/announcement.controller.js';
 
 import { createAuthMiddleware, requireRole } from "../middlewares/auth.middleware.js";
 import { strictLimiter } from "../middlewares/rateLimit.middleware.js";

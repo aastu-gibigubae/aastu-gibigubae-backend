@@ -9,7 +9,11 @@ import leaderRouter from "./routes/leader.routes.js";
 import magazineRoutes from "./routes/magazine.route.js";
 import kiflatRoutes from "./routes/kiflat.route.js";
 import subKiflatRoutes from "./routes/subKiflat.route.js";
+<<<<<<< HEAD
 import announcementRoutes from "./routes/announcement.routes.js";
+=======
+import galleryRouter from "./routes/gallery.routes.js";
+>>>>>>> origin/gallery-api
 import { errorHandler } from "./middlewares/errorHandler.middleware.js";
 
 const app = express();
@@ -39,7 +43,11 @@ app.use("/api/leaders", leaderRouter);
 app.use("/api/magazines", magazineRoutes);
 app.use("/api/kiflats", kiflatRoutes);
 app.use("/api/sub-kiflats", subKiflatRoutes);
+<<<<<<< HEAD
 app.use("/api/announcements", announcementRoutes);
+=======
+app.use("/api/gallery", galleryRouter);
+>>>>>>> origin/gallery-api
 
 // Must be registered AFTER all routes - Express identifies error handlers by their 4 arguments
 app.use(errorHandler);
