@@ -37,7 +37,7 @@ export const createSubKiflat = async (
         kiflat_id: data.kiflatId,
         name: data.name,
         description: data.description,
-        image_url: data.imageUrl,
+        image_urls: data.imageUrls || [],
       },
     });
   } catch (error) {
@@ -176,7 +176,7 @@ export const getSubKiflatById = async (
             id: true,
             name: true,
             description: true,
-            image_url: true,
+            image_urls: true,
           },
         },
       },
@@ -240,8 +240,8 @@ export const updateSubKiflat = async (
           description: data.description,
         }),
 
-        ...(data.imageUrl !== undefined && {
-          image_url: data.imageUrl,
+        ...(data.imageUrls !== undefined && {
+          image_urls: data.imageUrls,
         }),
       },
     });

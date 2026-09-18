@@ -5,14 +5,18 @@ export interface CreateLeaderInput {
   name: string;
   role: string;
   biography: string;
-  profile_image_url?: string;
+  contact?: string;
+  image_url?: string;
+  userId: string;
 }
 
 export interface UpdateLeaderInput {
   name?: string;
   role?: string;
   biography?: string;
-  profile_image_url?: string | null;
+  contact?: string;
+  image_url?: string | null;
+  userId?: string;
 }
 
 //Creates a new Leader record.

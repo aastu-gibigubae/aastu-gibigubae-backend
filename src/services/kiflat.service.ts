@@ -15,7 +15,7 @@ export const createKiflat = async (
       data: {
         name: data.name,
         description: data.description,
-        image_url: data.imageUrl,
+        image_urls: data.imageUrls || [],
       },
     });
   } catch (error) {
@@ -78,7 +78,7 @@ export const getKiflats = async (
             id: true,
             name: true,
             description: true,
-            image_url: true,
+            image_urls: true,
             created_at: true,
             updated_at: true,
 
@@ -180,8 +180,8 @@ export const updateKiflat = async (
           description: data.description,
         }),
 
-        ...(data.imageUrl !== undefined && {
-          image_url: data.imageUrl,
+        ...(data.imageUrls !== undefined && {
+          image_urls: data.imageUrls,
         }),
       },
     });

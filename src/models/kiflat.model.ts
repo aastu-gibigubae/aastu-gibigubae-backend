@@ -1,13 +1,13 @@
 export interface CreateKiflatInput {
   name: string;
   description?: string | null;
-  imageUrl?: string | null;
+  imageUrls?: string[];
 }
 
 export interface UpdateKiflatInput {
   name?: string;
   description?: string | null;
-  imageUrl?: string | null;
+  imageUrls?: string[];
 }
 
 export interface KiflatQuery {

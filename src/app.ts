@@ -2,17 +2,27 @@ import 'dotenv/config';
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
 import eventRoutes from "./routes/event.routes.js";
 import leaderRouter from "./routes/leader.routes.js";
 import magazineRoutes from "./routes/magazine.route.js";
 import kiflatRoutes from "./routes/kiflat.route.js";
 import subKiflatRoutes from "./routes/subKiflat.route.js";
+import announcementRoutes from "./routes/announcement.routes.js";
 import { errorHandler } from "./middlewares/errorHandler.middleware.js";
 
 const app = express();
 
 app.use(helmet());
+
+// Global rate limiting
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // limit each IP to 1000 requests per windowMs
+  message: "Too many requests from this IP, please try again after 15 minutes",
+});
+app.use(globalLimiter);
 
 app.use(
   cors({
@@ -29,6 +39,7 @@ app.use("/api/leaders", leaderRouter);
 app.use("/api/magazines", magazineRoutes);
 app.use("/api/kiflats", kiflatRoutes);
 app.use("/api/sub-kiflats", subKiflatRoutes);
+app.use("/api/announcements", announcementRoutes);
 
 // Must be registered AFTER all routes - Express identifies error handlers by their 4 arguments
 app.use(errorHandler);

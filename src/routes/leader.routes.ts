@@ -3,7 +3,9 @@ import {
   createAuthMiddleware,
   requireRole,
 } from '../middlewares/auth.middleware.js';
+import { strictLimiter } from '../middlewares/rateLimit.middleware.js';
 import { validate } from '../middlewares/validate.middleware.js';
+import { sanitizeRichText } from '../middlewares/sanitize.middleware.js';
 import {
   createLeaderSchema,
   updateLeaderSchema,
@@ -31,6 +33,8 @@ leaderRouter.post(
   '/',
   authenticate,
   requireRole('ADMIN', 'SUB_ADMIN'),
+  strictLimiter,
+  sanitizeRichText,
   validate(createLeaderSchema),
   leaderController.createLeader
 );
@@ -40,6 +44,8 @@ leaderRouter.put(
   '/:id',
   authenticate,
   requireRole('ADMIN', 'SUB_ADMIN'),
+  strictLimiter,
+  sanitizeRichText,
   validate(leaderIdParamSchema, 'params'),
   validate(updateLeaderSchema),
   leaderController.updateLeader
@@ -50,6 +56,7 @@ leaderRouter.delete(
   '/:id',
   authenticate,
   requireRole('ADMIN', 'SUB_ADMIN'),
+  strictLimiter,
   validate(leaderIdParamSchema, 'params'),
   leaderController.deleteLeader
 );

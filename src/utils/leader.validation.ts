@@ -8,7 +8,9 @@ export const createLeaderSchema = Joi.object({
   name: Joi.string().trim().min(1).max(255).required(),
   role: Joi.string().trim().min(1).max(255).required(),
   biography: Joi.string().trim().min(1).required(),
-  profile_image_url: Joi.string().uri().optional(),
+  contact: Joi.string().trim().allow(null, '').optional(),
+  image_url: Joi.string().uri().optional(),
+  userId: Joi.string().uuid().required(),
 });
 
 /**
@@ -19,7 +21,9 @@ export const updateLeaderSchema = Joi.object({
   name: Joi.string().trim().min(1).max(255).optional(),
   role: Joi.string().trim().min(1).max(255).optional(),
   biography: Joi.string().trim().min(1).optional(),
-  profile_image_url: Joi.string().uri().allow(null, '').optional(),
+  contact: Joi.string().trim().allow(null, '').optional(),
+  image_url: Joi.string().uri().allow(null, '').optional(),
+  userId: Joi.string().uuid().optional(),
 })
   .min(1)
   .message('At least one field must be provided to update');

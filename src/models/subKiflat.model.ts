@@ -2,14 +2,14 @@ export interface CreateSubKiflatInput {
   kiflatId: string;
   name: string;
   description?: string | null;
-  imageUrl?: string | null;
+  imageUrls?: string[];
 }
 
 export interface UpdateSubKiflatInput {
   kiflatId?: string;
   name?: string;
   description?: string | null;
-  imageUrl?: string | null;
+  imageUrls?: string[];
 }
 
 export interface SubKiflatQuery {

@@ -13,7 +13,7 @@ export const createMagazineSchema = Joi.object({
         "Title must not exceed 200 characters",
     }),
 
-  coverImageUrl: Joi.string()
+  coverImage: Joi.string()
     .trim()
     .uri({
       scheme: ["http", "https"],
@@ -38,7 +38,7 @@ export const createMagazineSchema = Joi.object({
         "Content must not exceed 50000 characters",
     }),
 
-  fileUrl: Joi.string()
+  pdfUrl: Joi.string()
     .trim()
     .uri({
       scheme: ["http", "https"],
@@ -46,24 +46,24 @@ export const createMagazineSchema = Joi.object({
     .max(2000)
     .required()
     .messages({
-      "string.empty": "File URL is required",
-      "any.required": "File URL is required",
+      "string.empty": "PDF URL is required",
+      "any.required": "PDF URL is required",
       "string.uri":
-        "File URL must be a valid HTTP or HTTPS URL",
+        "PDF URL must be a valid HTTP or HTTPS URL",
       "string.max":
-        "File URL must not exceed 2000 characters",
+        "PDF URL must not exceed 2000 characters",
     }),
 
-  createdBy: Joi.string()
+  userId: Joi.string()
     .guid({
       version: ["uuidv4"],
     })
     .required()
     .messages({
       "string.guid":
-        "createdBy must be a valid UUID",
+        "userId must be a valid UUID",
       "any.required":
-        "createdBy is required",
+        "userId is required",
     }),
 }).options({
   abortEarly: false,
@@ -83,7 +83,7 @@ export const updateMagazineSchema = Joi.object({
         "Title must not exceed 200 characters",
     }),
 
-  coverImageUrl: Joi.string()
+  coverImage: Joi.string()
     .trim()
     .uri({
       scheme: ["http", "https"],
@@ -106,7 +106,7 @@ export const updateMagazineSchema = Joi.object({
         "Content must not exceed 50000 characters",
     }),
 
-  fileUrl: Joi.string()
+  pdfUrl: Joi.string()
     .trim()
     .uri({
       scheme: ["http", "https"],
@@ -114,9 +114,9 @@ export const updateMagazineSchema = Joi.object({
     .max(2000)
     .messages({
       "string.uri":
-        "File URL must be a valid HTTP or HTTPS URL",
+        "PDF URL must be a valid HTTP or HTTPS URL",
       "string.max":
-        "File URL must not exceed 2000 characters",
+        "PDF URL must not exceed 2000 characters",
     }),
 })
   .min(1)

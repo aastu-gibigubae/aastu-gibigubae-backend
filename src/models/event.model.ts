@@ -5,7 +5,7 @@ export interface CreateEventInput {
   location: string;
   eventDate: string;
   isPublished?: boolean;
-  createdBy: string;
+  userId: string;
 }
 
 export interface UpdateEventInput {

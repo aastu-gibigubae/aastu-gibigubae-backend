@@ -28,6 +28,15 @@ enum ScopeArea {
   ALEHU_BEWERE
 }
 
+enum DonationPackageType {
+  KAHNATE_SEMAY
+  NATAN
+  SEALILENE_KIDIST
+  ADAM
+  DAWIT
+  NETSA_FIKAD
+}
+
 // Models
 
 model Event {
@@ -39,7 +48,7 @@ model Event {
   event_date  DateTime
   is_published Boolean @default(false)  
   /// UUID of the Auth Service user who created this record (no DB FK)
-  created_by  String   @db.Uuid
+  userId      String   @db.Uuid
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
@@ -51,7 +60,9 @@ model Leader {
   name              String
   role              String
   biography         String
-  profile_image_url String?
+  contact           String?
+  image_url         String?
+  userId            String   @db.Uuid
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
 
@@ -59,14 +70,16 @@ model Leader {
 }
 
 model MediaItem {
-  id          String    @id @default(uuid()) @db.Uuid
-  title       String
-  description String?
-  media_url   String
-  media_type  MediaType
+  id            String    @id @default(uuid()) @db.Uuid
+  title         String
+  description   String?
+  media_url     String
+  thumbnail_url String?
+  media_type    MediaType
   /// UUID of the Auth Service user who uploaded this item
-  uploaded_by String    @db.Uuid
-  created_at  DateTime  @default(now())
+  userId        String    @db.Uuid
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
 
   @@map("media_items")
 }
@@ -74,13 +87,14 @@ model MediaItem {
 model Magazine {
   id              String   @id @default(uuid()) @db.Uuid
   title           String
-  cover_image_url String?
-  /// Optional rich-text summary stored in the DB; the actual file is at file_url
+  cover_image     String?
+  /// Optional rich-text summary stored in the DB; the actual file is at pdf_url
   content         String?
-  file_url        String
+  pdf_url         String
   published_at    DateTime @default(now())
   /// UUID of the Auth Service user who created this record (no DB FK)
-  created_by      String   @db.Uuid
+  userId          String   @db.Uuid
+  created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
 
   @@map("magazines")
@@ -89,11 +103,11 @@ model Magazine {
 model Announcement {
   id         String   @id @default(uuid()) @db.Uuid
   title      String
-  message    String
+  content    String
   expires_at DateTime
   is_active  Boolean  @default(true)
   /// UUID of the Auth Service user who created this record (no DB FK)
-  created_by String   @db.Uuid
+  userId     String   @db.Uuid
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -106,7 +120,7 @@ model GalleryImage {
   description String?
   image_url   String
   /// UUID of the Auth Service user who uploaded this image (no DB FK)
-  uploaded_by String   @db.Uuid
+  userId      String   @db.Uuid
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
@@ -117,7 +131,7 @@ model Kiflat {
   id          String      @id @default(uuid()) @db.Uuid
   name        String
   description String?
-  image_url   String?
+  image_urls  String[]
   created_at  DateTime    @default(now())
   updated_at  DateTime    @updatedAt
   sub_kiflat  SubKiflat[]
@@ -130,7 +144,7 @@ model SubKiflat {
   kiflat_id   String   @db.Uuid
   name        String
   description String?
-  image_url   String?
+  image_urls  String[]
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
@@ -140,12 +154,13 @@ model SubKiflat {
 }
 
 model Subscription {
-  id            String   @id @default(uuid()) @db.Uuid
-  package_name  String
-  amount        Decimal  @db.Decimal(12, 2)
-  donor_name    String
-  donor_contact String
-  submitted_at  DateTime @default(now())
+  id            String              @id @default(uuid()) @db.Uuid
+  package       DonationPackageType
+  amount        Decimal             @db.Decimal(12, 2)
+  full_name     String
+  phone_number  String
+  email         String?
+  created_at    DateTime            @default(now())
 
   @@map("subscriptions")
 }

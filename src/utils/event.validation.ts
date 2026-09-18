@@ -67,14 +67,14 @@ export const createEventSchema = Joi.object({
       "boolean.base": "isPublished must be a boolean",
     }),
 
-  createdBy: Joi.string()
+  userId: Joi.string()
     .guid({
       version: ["uuidv4"],
     })
     .required()
     .messages({
-      "string.guid": "createdBy must be a valid UUID",
-      "any.required": "createdBy is required",
+      "string.guid": "userId must be a valid UUID",
+      "any.required": "userId is required",
     }),
 }).options({
   abortEarly: false,

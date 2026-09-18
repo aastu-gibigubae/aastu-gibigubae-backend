@@ -14,17 +14,17 @@ export const createMagazine = async (
     data: {
       title: data.title,
 
-      cover_image_url:
-        data.coverImageUrl ?? null,
+      cover_image:
+        data.coverImage ?? null,
 
       content:
         data.content ?? null,
 
-      file_url:
-        data.fileUrl,
+      pdf_url:
+        data.pdfUrl,
 
-      created_by:
-        data.createdBy,
+      userId:
+        data.userId,
     },
   });
 };
@@ -95,11 +95,12 @@ export const getPublishedMagazines = async (
         select: {
           id: true,
           title: true,
-          cover_image_url: true,
+          cover_image: true,
           content: true,
-          file_url: true,
+          pdf_url: true,
           published_at: true,
           updated_at: true,
+          created_at: true,
         },
 
         orderBy: {
@@ -145,11 +146,12 @@ export const getPublishedMagazineById = async (
     select: {
       id: true,
       title: true,
-      cover_image_url: true,
+      cover_image: true,
       content: true,
-      file_url: true,
+      pdf_url: true,
       published_at: true,
       updated_at: true,
+      created_at: true,
     },
   });
 };
@@ -271,9 +273,9 @@ export const updateMagazine = async (
         title: data.title,
       }),
 
-      ...(data.coverImageUrl !== undefined && {
-        cover_image_url:
-          data.coverImageUrl,
+      ...(data.coverImage !== undefined && {
+        cover_image:
+          data.coverImage,
       }),
 
       ...(data.content !== undefined && {
@@ -281,9 +283,9 @@ export const updateMagazine = async (
           data.content,
       }),
 
-      ...(data.fileUrl !== undefined && {
-        file_url:
-          data.fileUrl,
+      ...(data.pdfUrl !== undefined && {
+        pdf_url:
+          data.pdfUrl,
       }),
     },
   });

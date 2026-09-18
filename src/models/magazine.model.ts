@@ -1,16 +1,16 @@
 export interface CreateMagazineInput {
   title: string;
-  coverImageUrl?: string | null;
+  coverImage?: string | null;
   content?: string | null;
-  fileUrl: string;
-  createdBy: string;
+  pdfUrl: string;
+  userId: string;
 }
 
 export interface UpdateMagazineInput {
   title?: string;
-  coverImageUrl?: string | null;
+  coverImage?: string | null;
   content?: string | null;
-  fileUrl?: string;
+  pdfUrl?: string;
 }
 
 export interface MagazineQuery {

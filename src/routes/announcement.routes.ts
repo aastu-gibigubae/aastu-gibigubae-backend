@@ -1,16 +1,52 @@
 import { Router } from 'express';
 import * as announcementController from '../controllers/announcement.controller.ts';
 
-const router = Router();
+import { createAuthMiddleware, requireRole } from "../middlewares/auth.middleware.js";
+import { strictLimiter } from "../middlewares/rateLimit.middleware.js";
+import { validate } from "../middlewares/validate.middleware.js";
+import { sanitizeRichText } from "../middlewares/sanitize.middleware.js";
+import { createAnnouncementSchema, updateAnnouncementSchema, announcementIdParamSchema } from "../utils/announcement.validation.js";
+import { config } from "../../config/config.js";
 
-// No auth/role checks yet — per current task instructions, this is
-// logic-only. Scoped (announcements) access control per Technical
-// Reference §4.5 gets layered on once Sub-Admin scope middleware exists.
+const router = Router();
+const authenticate = createAuthMiddleware(config.JWT_PUBLIC_KEY);
 
 router.get('/', announcementController.listAnnouncements);
-router.get('/:id', announcementController.getAnnouncement);
-router.post('/', announcementController.createAnnouncement);
-router.put('/:id', announcementController.updateAnnouncement);
-router.delete('/:id', announcementController.deleteAnnouncement);
+
+router.get(
+  '/:id',
+  validate(announcementIdParamSchema, 'params'),
+  announcementController.getAnnouncement
+);
+
+router.post(
+  '/',
+  authenticate,
+  requireRole('ADMIN', 'SUB_ADMIN'),
+  strictLimiter,
+  sanitizeRichText,
+  validate(createAnnouncementSchema),
+  announcementController.createAnnouncement
+);
+
+router.put(
+  '/:id',
+  authenticate,
+  requireRole('ADMIN', 'SUB_ADMIN'),
+  strictLimiter,
+  sanitizeRichText,
+  validate(announcementIdParamSchema, 'params'),
+  validate(updateAnnouncementSchema),
+  announcementController.updateAnnouncement
+);
+
+router.delete(
+  '/:id',
+  authenticate,
+  requireRole('ADMIN', 'SUB_ADMIN'),
+  strictLimiter,
+  validate(announcementIdParamSchema, 'params'),
+  announcementController.deleteAnnouncement
+);
 
 export default router;

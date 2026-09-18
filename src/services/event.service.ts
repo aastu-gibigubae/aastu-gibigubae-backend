@@ -15,7 +15,7 @@ export const createEvent = async (data: CreateEventInput) => {
         location: data.location,
         event_date: new Date(data.eventDate),
         is_published: data.isPublished ?? false,
-        created_by: data.createdBy,
+        userId: data.userId,
       },
     });
   } catch (error) {

@@ -23,20 +23,18 @@ export const createKiflatSchema = Joi.object({
         "Description must not exceed 5000 characters",
     }),
 
-  imageUrl: Joi.string()
-    .trim()
-    .uri({
-      scheme: ["http", "https"],
-    })
-    .max(2000)
-    .allow(null, "")
+  imageUrls: Joi.array()
+    .items(
+      Joi.string()
+        .trim()
+        .uri({ scheme: ["http", "https"] })
+        .max(2000)
+    )
     .optional()
     .messages({
-      "string.uri":
-        "Image URL must be a valid HTTP or HTTPS URL",
-
-      "string.max":
-        "Image URL must not exceed 2000 characters",
+      "array.base": "Image URLs must be an array of strings",
+      "string.uri": "Each image URL must be a valid HTTP or HTTPS URL",
+      "string.max": "Each image URL must not exceed 2000 characters",
     }),
 }).options({
   abortEarly: false,
@@ -68,19 +66,18 @@ export const updateKiflatSchema = Joi.object({
         "Description must not exceed 5000 characters",
     }),
 
-  imageUrl: Joi.string()
-    .trim()
-    .uri({
-      scheme: ["http", "https"],
-    })
-    .max(2000)
-    .allow(null, "")
+  imageUrls: Joi.array()
+    .items(
+      Joi.string()
+        .trim()
+        .uri({ scheme: ["http", "https"] })
+        .max(2000)
+    )
+    .optional()
     .messages({
-      "string.uri":
-        "Image URL must be a valid HTTP or HTTPS URL",
-
-      "string.max":
-        "Image URL must not exceed 2000 characters",
+      "array.base": "Image URLs must be an array of strings",
+      "string.uri": "Each image URL must be a valid HTTP or HTTPS URL",
+      "string.max": "Each image URL must not exceed 2000 characters",
     }),
 })
   .min(1)
