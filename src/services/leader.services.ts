@@ -28,12 +28,34 @@ export const createLeader = async (data: CreateLeaderInput) => {
 export const getLeaders = async () => {
   return prisma.leader.findMany({
     orderBy: { created_at: 'desc' },
+    select: {
+      id: true,
+      name: true,
+      role: true,
+      biography: true,
+      contact: true,
+      image_url: true,
+      created_at: true,
+      updated_at: true,
+    }
   });
 }
 
 //Returns a single Leader by its UUID.
 export const getLeaderById = async (id: string) => {
-  const leader = await prisma.leader.findUnique({ where: { id } });
+  const leader = await prisma.leader.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+      role: true,
+      biography: true,
+      contact: true,
+      image_url: true,
+      created_at: true,
+      updated_at: true,
+    }
+  });
   if (!leader) {
     throw new AppError(404, `Leader with id '${id}' not found`);
   }

@@ -48,6 +48,8 @@ export interface CreateSubscriptionInput {
   amount?: number; // only used when package_name is Netsa Fikad
   donor_name: string;
   donor_contact: string;
+  user_id?: string;
+  email?: string;
 }
 
 export async function listPackages() {
@@ -90,6 +92,8 @@ export async function createSubscription(input: CreateSubscriptionInput) {
       amount,
       full_name: input.donor_name,
       phone_number: input.donor_contact,
+      user_id: input.user_id,
+      email: input.email,
     },
   });
 }
@@ -106,4 +110,15 @@ export async function getSubscriptionById(id: string) {
     throw new AppError(404, "Subscription not found");
   }
   return subscription;
+}
+
+export async function updateSubscriptionStatus(id: string, status: any, admin_note?: string) {
+  await getSubscriptionById(id);
+  return prisma.subscription.update({
+    where: { id },
+    data: {
+      ...(status && { status }),
+      ...(admin_note !== undefined && { admin_note }),
+    },
+  });
 }

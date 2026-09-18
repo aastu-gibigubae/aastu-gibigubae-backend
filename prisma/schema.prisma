@@ -37,6 +37,13 @@ enum DonationPackageType {
   NETSA_FIKAD
 }
 
+enum SubscriptionStatus {
+  PENDING
+  CONTACTED
+  CONFIRMED
+  REJECTED
+}
+
 // Models
 
 model Event {
@@ -160,7 +167,11 @@ model Subscription {
   full_name    String
   phone_number String
   email        String?
+  status       SubscriptionStatus  @default(PENDING)
+  admin_note   String?
+  user_id      String?             @db.Uuid
   created_at   DateTime            @default(now())
+  updated_at   DateTime            @updatedAt
 
   @@map("subscriptions")
 }

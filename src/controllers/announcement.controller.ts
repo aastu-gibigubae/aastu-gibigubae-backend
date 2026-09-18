@@ -16,7 +16,12 @@ export async function listAnnouncements(_req: Request, res: Response) {
 }
 
 export async function getAnnouncement(req: Request, res: Response) {
-  const announcement = await announcementService.getAnnouncementById(getIdParam(req));
+  const announcement = await announcementService.getAnnouncementById(getIdParam(req), true);
+  res.json(announcement);
+}
+
+export async function getAnnouncementAdmin(req: Request, res: Response) {
+  const announcement = await announcementService.getAnnouncementById(getIdParam(req), false);
   res.json(announcement);
 }
 

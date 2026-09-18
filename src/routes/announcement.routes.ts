@@ -16,6 +16,14 @@ const authenticate = createAuthMiddleware(config.JWT_PUBLIC_KEY);
 router.get('/', announcementController.listAnnouncements);
 
 router.get(
+  '/admin/:id',
+  authenticate,
+  requireScopeAccess(ScopeArea.ANNOUNCEMENTS),
+  validate(announcementIdParamSchema, 'params'),
+  announcementController.getAnnouncementAdmin
+);
+
+router.get(
   '/:id',
   validate(announcementIdParamSchema, 'params'),
   announcementController.getAnnouncement

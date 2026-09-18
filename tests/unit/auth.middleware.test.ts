@@ -2,7 +2,7 @@ import express from 'express';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import { generateKeyPairSync } from 'crypto';
-import { createAuthMiddleware, requireRole } from '../../src/middlewares/auth.middleware.js';
+import { createAuthMiddleware, createOptionalAuthMiddleware, requireRole } from '../../src/middlewares/auth.middleware.js';
 import { errorHandler } from '../../src/middlewares/errorHandler.middleware.js';
 
 function makeRsaKeyPair() {
@@ -117,5 +117,41 @@ describe('auth middleware', () => {
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body.ok).toBe(true);
+  });
+});
+
+describe('createOptionalAuthMiddleware', () => {
+  function buildOptionalApp() {
+    const app = express();
+    const optionalAuth = createOptionalAuthMiddleware(publicKey);
+
+    app.get('/optional', optionalAuth, (req, res) => {
+      res.json({ user: (req as any).user || null });
+    });
+
+    app.use(errorHandler);
+    return app;
+  }
+
+  it('passes through anonymously if no token is provided', async () => {
+    const res = await request(buildOptionalApp()).get('/optional');
+    expect(res.status).toBe(200);
+    expect(res.body.user).toBeNull();
+  });
+
+  it('rejects an invalid token', async () => {
+    const res = await request(buildOptionalApp())
+      .get('/optional')
+      .set('Authorization', 'Bearer invalid-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('attaches user if valid token is provided', async () => {
+    const token = signToken({ userId: 'u1', role: 'STUDENT' });
+    const res = await request(buildOptionalApp())
+      .get('/optional')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.user.userId).toBe('u1');
   });
 });

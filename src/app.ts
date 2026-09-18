@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import { config } from "../config/config.js";
 
 import eventRoutes from "./routes/event.routes.js";
 import leaderRouter from "./routes/leader.routes.js";
@@ -29,7 +30,7 @@ app.use(globalLimiter);
 
 app.use(
   cors({
-    origin: true,
+    origin: config.ALLOWED_ORIGINS,
     credentials: true,
   }),
 );

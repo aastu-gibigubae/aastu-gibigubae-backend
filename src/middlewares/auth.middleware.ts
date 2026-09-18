@@ -98,6 +98,40 @@ export function createAuthMiddleware(keyProvider: KeyProvider) {
   };
 }
 
+export function createOptionalAuthMiddleware(keyProvider: KeyProvider) {
+  return async function optionalAuthenticate(
+    req: Request,
+    _res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const token = extractBearerToken(req);
+      if (!token) {
+        return next();
+      }
+
+      const publicKey =
+        typeof keyProvider === 'string' ? keyProvider : await keyProvider();
+
+      const decoded = jwt.verify(token, publicKey, {
+        algorithms: ['RS256'],
+      });
+
+      if (typeof decoded !== 'string') {
+        req.user = normalizeUser(decoded);
+      }
+      next();
+    } catch (err) {
+      // If token is invalid/expired, we just ignore it for optional auth, or we could throw.
+      // Usually, optional auth should still reject invalid tokens, but let's just proceed without a user
+      // or maybe we should throw so the frontend knows the token is dead?
+      // "If a valid JWT happens to be present... The endpoint must continue to work fully without a JWT."
+      // We'll throw if it's invalid so the client knows they need to refresh, but if it's completely missing, we continue.
+      next(toAuthError(err));
+    }
+  };
+}
+
 function toAuthError(err: unknown): AppError {
   if (err instanceof AppError) return err;
   if (err instanceof jwt.TokenExpiredError) {

@@ -26,11 +26,38 @@ export async function listActiveAnnouncements() {
       expires_at: { gt: new Date() },
     },
     orderBy: { created_at: 'desc' },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      expires_at: true,
+      is_active: true,
+      created_at: true,
+      updated_at: true,
+    }
   });
 }
 
-export async function getAnnouncementById(id: string) {
-  const announcement = await prisma.announcement.findUnique({ where: { id } });
+export async function getAnnouncementById(id: string, isPublic = false) {
+  const where: any = { id };
+  if (isPublic) {
+    where.is_active = true;
+    where.expires_at = { gt: new Date() };
+  }
+
+  const announcement = await prisma.announcement.findUnique({ 
+    where,
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      expires_at: true,
+      is_active: true,
+      created_at: true,
+      updated_at: true,
+      ...(!isPublic ? { userId: true } : {})
+    }
+  });
   if (!announcement) {
     throw new AppError(404, 'Announcement not found');
   }
