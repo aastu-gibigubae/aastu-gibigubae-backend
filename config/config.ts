@@ -27,4 +27,7 @@ export const config = {
   // instead of a static key, only this file + the key-provider wiring in
   // app.ts need to change — the middleware itself doesn't care.
   JWT_PUBLIC_KEY: normalizePem(required('JWT_PUBLIC_KEY')),
+  JWT_PRIVATE_KEY: process.env.JWT_PRIVATE_KEY
+    ? normalizePem(process.env.JWT_PRIVATE_KEY)
+    : undefined,
 };

@@ -15,6 +15,7 @@ import adminScopeRoutes from "./routes/adminScope.routes.js";
 import galleryRouter from "./routes/gallery.routes.js";
 import alehuBewereRoutes from "./routes/alehuBewere.routes.js";
 import { errorHandler } from "./middlewares/errorHandler.middleware.js";
+import devRoutes from "./routes/dev.routes.js";
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.use("/api/announcements", announcementRoutes);
 app.use("/api/admin/sub-admins", adminScopeRoutes);
 app.use("/api/gallery", galleryRouter);
 app.use("/api/alehu-bewere", alehuBewereRoutes);
+app.use("/api/dev", devRoutes);
 
 // Must be registered AFTER all routes - Express identifies error handlers by their 4 arguments
 app.use(errorHandler);
