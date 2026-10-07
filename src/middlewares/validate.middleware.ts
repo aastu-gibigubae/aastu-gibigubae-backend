@@ -22,7 +22,18 @@ export function validate(schema: Joi.Schema, segment: RequestSegment = 'body') {
     }
 
     // Replace the segment with the stripped/coerced value from Joi.
-    (req as unknown as Record<string, unknown>)[segment] = value;
+    // In Express 5, req.query is a getter-only property on IncomingMessage,
+    // so direct assignment throws a TypeError. Object.defineProperty overrides it safely.
+    if (segment === 'query') {
+      Object.defineProperty(req, 'query', {
+        value,
+        writable: true,
+        enumerable: true,
+        configurable: true,
+      });
+    } else {
+      (req as unknown as Record<string, unknown>)[segment] = value;
+    }
     next();
   };
 }
