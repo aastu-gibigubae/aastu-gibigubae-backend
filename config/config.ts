@@ -16,7 +16,14 @@ function required(name: string): string {
  * This normalizes either form so jsonwebtoken doesn't choke on a malformed key.
  */
 function normalizePem(value: string): string {
-  return value.includes('\\n') ? value.replace(/\\n/g, '\n') : value;
+  let cleaned = value.trim();
+  if (
+    (cleaned.startsWith('"') && cleaned.endsWith('"')) ||
+    (cleaned.startsWith("'") && cleaned.endsWith("'"))
+  ) {
+    cleaned = cleaned.slice(1, -1);
+  }
+  return cleaned.includes('\\n') ? cleaned.replace(/\\n/g, '\n') : cleaned;
 }
 
 export const config = {
